@@ -1,18 +1,21 @@
 import { test, expect } from '@playwright/test';
+import { LoginPage } from '../pages/LoginPage';
+import { InventoryPage } from '../pages/InventoryPage';
+//import { CartPage } from '../pages/CartPage';
+import cartItems from '../test-data/cart-items.json';
 
-test('has title', async ({ page }) => {
-  await page.goto('https://playwright.dev/');
+test.describe('Add to cart', () => {
+    test.beforeEach(async ({page}) => {
+        const login = new LoginPage(page);
+        await login.goto();
 
-  // Expect a title "to contain" a substring.
-  await expect(page).toHaveTitle(/Playwright/);
-});
+        // SauceDemo test creds (nejsou citlivé, ale i tak je hezké je mít v ENV)
+        const user = process.env.E2E_USER || 'standard_user';
+        const pass = process.env.E2E_PASS || 'secret_sauce';
 
-test('get started link', async ({ page }) => {
-  await page.goto('https://playwright.dev/');
+        await login.login(user, pass);
 
-  // Click the get started link.
-  await page.getByRole('link', { name: 'Get started' }).click();
-
-  // Expects page to have a heading with the name of Installation.
-  await expect(page.getByRole('heading', { name: 'Installation' })).toBeVisible();
+        const inventory = new InventoryPage(page);
+        //await inventory.assertLoaded();
+    });
 });
