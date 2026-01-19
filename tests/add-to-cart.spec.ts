@@ -1,21 +1,50 @@
-import { test, expect } from '@playwright/test';
-import { LoginPage } from '../pages/LoginPage';
-import { InventoryPage } from '../pages/InventoryPage';
-//import { CartPage } from '../pages/CartPage';
-import cartItems from '../test-data/cart-items.json';
+import { test, expect } from './fixtures';
+import testData from '../test-data/products.json';
+import credentionals from '../test-data/credentials.json';
 
-test.describe('Add to cart', () => {
-    test.beforeEach(async ({page}) => {
-        const login = new LoginPage(page);
-        await login.goto();
+test.describe('Add to Cart', () => {
+    // Fixture už zajistí přihlášení - DRY!
+    test.use({ storageState: { cookies: [], origins: [] } });
 
-        // SauceDemo test creds (nejsou citlivé, ale i tak je hezké je mít v ENV)
-        const user = process.env.E2E_USER || 'standard_user';
-        const pass = process.env.E2E_PASS || 'secret_sauce';
+    test.beforeEach(async ({ loginPage }) => {
+        await loginPage.goto();
+        await loginPage.login(
+            credentionals.users.standard.username,
+            credentionals.users.standard.password
+        );
+    });
 
-        await login.login(user, pass);
+    test('should add single product to cart', async ({ page, productsPage, cartPage }) => {
+        const product = testData.products.backpack;
 
-        const inventory = new InventoryPage(page);
-        //await inventory.assertLoaded();
+        // Přidej do košíku
+        await productsPage.addToCartByName(product.name);
+
+        // Playwright Best Practice: Auto-waiting!
+        await expect(productsPage.cartBadge).toHaveText('1');
+
+        // Jdi do košíku
+        await productsPage.goToCart();
+
+        // KISS: Jednoduché aserce
+        await expect(cartPage.getItemName(product.name)).toBeVisible();
+        await expect(cartPage.getItemPrice(product.name)).toHaveText(product.price);
+    });
+
+    test('should add multiple products', async ({ productsPage, cartPage }) => {
+        const products = Object.values(testData.products);
+
+        // DRY: Loop místo duplicitního kódu
+        for (const product of products) {
+            await productsPage.addToCartByName(product.name);
+        }
+
+        await expect(productsPage.cartBadge).toHaveText(products.length.toString());
+        await productsPage.goToCart();
+
+        // DRY: Ověření v loopu
+        for (const product of products) {
+            await expect(cartPage.getItemName(product.name)).toBeVisible();
+        }
     });
 });
