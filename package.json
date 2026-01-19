@@ -1,0 +1,14 @@
+{
+  "name": "kooperativa-demo",
+  "version": "1.0.0",
+  "description": "Playwright DEMO for presentation purposes",
+  "main": "index.js",
+  "scripts": {},
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@playwright/test": "^1.57.0",
+    "@types/node": "^25.0.9"
+  }
+}
