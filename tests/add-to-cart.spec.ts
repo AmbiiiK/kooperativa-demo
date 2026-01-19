@@ -3,17 +3,6 @@ import testData from '../test-data/products.json';
 import credentionals from '../test-data/credentials.json';
 
 test.describe('Add to Cart', () => {
-    // Fixture už zajistí přihlášení - DRY!
-    test.use({ storageState: { cookies: [], origins: [] } });
-
-    test.beforeEach(async ({ loginPage }) => {
-        await loginPage.goto();
-        await loginPage.login(
-            credentionals.users.standard.username,
-            credentionals.users.standard.password
-        );
-    });
-
     test('should add single product to cart', async ({ page, productsPage, cartPage }) => {
         const product = testData.products.backpack;
 
