@@ -9,10 +9,8 @@ test.describe('Add to Cart - Negative', () => {
             credentials.users.locked.password
         );
 
-        // KISS: Jednoduchá aserce
         await expect(loginPage.errorMessage).toContainText('locked out');
 
-        // Playwright Best Practice: Čekání na URL je built-in
         await expect(page).toHaveURL(/.*\/$/);
     });
 });

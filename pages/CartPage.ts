@@ -7,7 +7,6 @@ export class CartPage {
         this.page = page;
     }
 
-    // KISS: Vrací locator, ne hodnotu
     getItemName(productName: string): Locator {
         return this.getCartItemByName(productName).locator('[data-test="inventory-item-name"]');
     }
