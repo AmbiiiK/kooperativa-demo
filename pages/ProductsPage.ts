@@ -11,12 +11,10 @@ export class ProductsPage {
         this.cartBadge = page.locator('[data-test="shopping-cart-badge"]');
     }
 
-    // DRY: Jedna metoda pro získání product container
     getProductByName(name: string): Locator {
         return this.page.locator('.inventory_item').filter({ hasText: name });
     }
 
-    // KISS: Pouze základní akce
     async addToCartByName(productName: string) {
         const product = this.getProductByName(productName);
         await product.getByRole('button', { name: /add to cart/i }).click();

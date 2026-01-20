@@ -1,7 +1,7 @@
 import { test, expect } from './fixtures';
 import credentials from '../test-data/credentials.json';
 
-test.describe('Add to Cart - Negative', () => {
+test.describe('Login - locked account', () => {
     test('locked user cannot login', async ({ page, loginPage }) => {
         await loginPage.goto();
         await loginPage.login(
